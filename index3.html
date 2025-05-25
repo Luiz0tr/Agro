@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Desafios e Oportunidades do Agro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet" />
+  <style>
+    /* Reset e estilos base */
+    body, html {
+      margin: 0;
+      padding: 0;
+      min-height: 200vh;
+      overflow-y: auto;
+      font-family: 'Quicksand', sans-serif;
+      background: transparent;
+      scroll-behavior: smooth;
+    }
+
+    /* Vídeo de fundo */
+    #video-fundo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    /* Vídeo de transição */
+    #video-transicao {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 9999;
+      display: none;
+    }
+
+    /* Botões topo */
+    .top-buttons {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 25px;
+      pointer-events: auto;
+      z-index: 10;
+    }
+
+    .top-buttons a {
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      padding: 6px 14px;
+      background: rgba(0, 60, 0, 0.7);
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0, 140, 0, 0.7);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+    }
+
+    .top-buttons a:hover {
+      background: #3cab00;
+      color: #fff !important;
+      box-shadow: 0 0 12px #3cab00;
+      text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Conteúdo principal */
+    .conteudo {
+      position: relative;
+      margin: 60px auto 80px auto;
+      background: linear-gradient(135deg, #f4fff4 0%, #e8f5e9 100%);
+      padding: 50px 60px;
+      border-radius: 20px;
+      max-width: 760px;
+      width: 90%;
+      box-shadow: 0 0 30px rgba(0, 60, 0, 0.2);
+      z-index: 1;
+      color: #1b3c20;
+    }
+
+    .conteudo img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto 30px auto;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 80, 0, 0.3);
+      object-fit: cover;
+    }
+
+    .conteudo h1 {
+      font-size: 2.3rem;
+      color: #2e7d32;
+      text-align: center;
+      margin-bottom: 10px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .conteudo hr {
+      border: none;
+      border-top: 2px solid #4caf50;
+      width: 60%;
+      margin: 0 auto 25px auto;
+    }
+
+    .conteudo p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #2b2b2b;
+      text-align: justify;
+    }
+
+    .conteudo strong {
+      color: #2e7d32;
+    }
+
+    .conteudo span {
+      color: #33691e;
+      font-weight: 600;
+    }
+
+    /* Conteúdo secundário */
+    .conteudo-secundaria {
+      position: relative;
+      margin: 80px auto 60px auto;
+      background: linear-gradient(135deg, #e8f5e9 0%, #d0ecd0 100%);
+      padding: 40px 50px;
+      border-radius: 20px;
+      max-width: 700px;
+      width: 85%;
+      box-shadow: 0 0 25px rgba(0, 90, 0, 0.2);
+      color: #1b3c20;
+      opacity: 0;
+      transform: translateY(60px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      z-index: 1;
+    }
+
+    .conteudo-secundaria.visivel {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Logo no canto superior direito */
+    .titulo-canto {
+      position: fixed;
+      top: 20px;
+      right: 30px;
+      z-index: 2;
+    }
+
+    .titulo-canto img {
+      height: 50px;
+      filter: drop-shadow(1px 1px 3px rgba(0,0,0,0.5));
+    }
+
+    /* Botão voltar ao topo */
+    #btnTopo {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: rgba(50, 120, 0, 0.85);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(50, 120, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 100;
+    }
+
+    #btnTopo.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #btnTopo svg {
+      fill: white;
+      width: 24px;
+      height: 24px;
+      transition: transform 0.3s ease;
+    }
+
+    #btnTopo:hover svg {
+      transform: translateY(-3px);
+    }
+
+    /* Contêiner para as folhas caindo - fixo no topo e laterais, fora da área do conteúdo */
+    #folhas-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 120px; /* altura onde as folhas aparecem e começam a cair */
+      pointer-events: none; /* para não interferir no clique */
+      z-index: 9;
+      overflow: visible;
+      user-select: none;
+    }
+
+    /* Estilo das folhas */
+    .folha {
+      position: absolute;
+      width: 80px;
+      opacity: 0.8;
+      pointer-events: none;
+      user-select: none;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
+      animation-name: queda;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+    }
+
+    /* Animação da queda com movimento lateral e rotação */
+    @keyframes queda {
+      0% {
+        transform: translateY(-100px) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget('https://vlibras.gov.br/app');
+  </script>
+
+  <video autoplay muted loop id="video-fundo">
+    <source src="170871-844432931_tiny.mp4" type="video/mp4" />
+    Seu navegador não suporta vídeo HTML5.
+  </video>
+
+  <video id="video-transicao" muted>
+    <source src="Transasao.mp4" type="video/mp4" />
+    Seu navegador não suporta vídeo HTML5.
+  </video>
+
+  <div class="conteudo" id="conteudo-principal">
+    <div class="top-buttons">
+      <a href="Contato.html" class="contato">Contato</a>
+      <a href="index.html" class="saiba">Home</a>
+      <a href="index4.html" class="continuar">Continuar</a>
+    </div>
+
+    <img src="Agro.jpg" alt="Campo agrícola" />
+    <h1>Desafios e Oportunidades no Agro</h1>
+    <hr>
+
+    <p>
+      A <strong>agricultura moderna</strong> enfrenta uma série de desafios em áreas <em>rurais</em> e <em>urbanas</em>, desde a <span>escassez de recursos naturais</span> até a necessidade de uma produção mais <strong>sustentável</strong> e <strong>eficiente</strong>.
+      Em zonas rurais, é essencial preservar o solo, usar a água de forma racional e investir em tecnologias que <em>garantam produtividade</em> e rentabilidade.
+    </p>
+
+    <p>
+      Nas cidades, a demanda crescente por alimentos frescos e saudáveis impulsiona iniciativas como <span>hortas urbanas</span>, agricultura vertical e sistemas de distribuição inteligentes. Esses avanços promovem a <strong>integração entre o campo e a cidade</strong>, beneficiando produtores e consumidores.
+    </p>
+
+    <p>
+      Apesar das dificuldades, há <strong>grandes oportunidades</strong> no setor. Investimentos em <span>inovação tecnológica</span>, <strong>educação agrícola</strong> e políticas públicas inclusivas podem transformar o agronegócio em um motor de <em>desenvolvimento sustentável</em> para o Brasil.
+    </p>
+  </div>
+
+  <div class="conteudo-secundaria" id="conteudo-secundario">
+    <h2>Inovações Sustentáveis no Agro</h2>
+    <p>
+      Novas tecnologias como agricultura de precisão, drones para monitoramento de plantações e o uso de biotecnologia estão revolucionando a forma como produzimos alimentos. Estas soluções promovem um agro mais eficiente e amigo do meio ambiente.
+    </p>
+    <p>
+      Além disso, a integração de sistemas inteligentes para gestão de água e solo contribui para reduzir desperdícios e aumentar a produtividade, garantindo que o futuro do agronegócio seja sustentável para as próximas gerações.
+    </p>
+  </div>
+
+  <!-- Botão voltar ao topo -->
+  <button id="btnTopo" aria-label="Voltar ao topo">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 4l-8 8h6v8h4v-8h6z"/>
+    </svg>
+  </button>
+
+  <!-- Container para as folhas caindo -->
+  <div id="folhas-container"></div>
+
+  <div class="titulo-canto">
+    <img src="Logo-removebg-preview.png" alt="Logo Morelli" />
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const principal = document.getElementById('conteudo-principal');
+      const secundario = document.getElementById('conteudo-secundario');
+      const btnTopo = document.getElementById('btnTopo');
+      const videoFundo = document.getElementById('video-fundo');
+      const videoTransicao = document.getElementById('video-transicao');
+
+      // Aparece conteúdo com animação
+      function verificarVisibilidade() {
+        const rectPrincipal = principal.getBoundingClientRect();
+        if (rectPrincipal.top <= window.innerHeight - 100) {
+          principal.classList.add('visivel');
+        }
+
+        const rectSecundario = secundario.getBoundingClientRect();
+        if (rectSecundario.top <= window.innerHeight - 100) {
+          secundario.classList.add('visivel');
+        }
+      }
+
+      window.addEventListener('scroll', () => {
+        verificarVisibilidade();
+
+        if(window.scrollY > 300){
+          btnTopo.classList.add('show');
+        } else {
+          btnTopo.classList.remove('show');
+        }
+      });
+
+      verificarVisibilidade();
+
+      btnTopo.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // --- Folhas caindo ---
+      const folhasContainer = document.getElementById('folhas-container');
+      const folhaImgs = ['Folha.png', 'Folha2.png']; // nomes das imagens das folhas
+      const numFolhas = 12; // número de folhas simultâneas
+
+      function criarFolha(index) {
+        const folha = document.createElement('img');
+        folha.src = folhaImgs[index % folhaImgs.length];
+        folha.classList.add('folha');
+
+        // Posiciona as folhas SOMENTE fora da área do conteúdo (nas laterais da tela)
+        const ladoLargura = window.innerWidth * 0.15;
+
+        // Aleatoriamente decide se a folha aparece à esquerda ou à direita
+        const lado = Math.random() < 0.5 ? 'left' : 'right';
+
+        // Define a posição horizontal dentro da faixa lateral
+        let posX;
+        if(lado === 'left'){
+          posX = Math.random() * ladoLargura;
+          folha.style.left = `${posX}px`;
+          folha.style.right = 'auto';
+        } else {
+          posX = Math.random() * ladoLargura;
+          folha.style.right = `${posX}px`;
+          folha.style.left = 'auto';
+        }
+
+        // Posição vertical inicial (ligeiramente acima do container)
+        folha.style.top = `${-40 - Math.random() * 80}px`;
+
+        // Define duração e delay aleatório para animação de queda
+        const duracao = 8000 + Math.random() * 7000; // 8s a 15s
+        const delay = Math.random() * 1000; // delay até 2s (mais cedo)
+
+        folha.style.animationDuration = `${duracao}ms`;
+        folha.style.animationDelay = `${delay}ms`;
+
+        // Tamanho variável das folhas
+        const tamanho = 40 + Math.random() * 60; // 40 a 100px largura
+        folha.style.width = `${tamanho}px`;
+
+        folhasContainer.appendChild(folha);
+      }
+
+      // Cria as folhas
+      for(let i=0; i<numFolhas; i++){
+        criarFolha(i);
+      }
+
+      // --- Controle do clique dos botões para transição ---
+      document.querySelectorAll('.top-buttons a').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+
+          const url = link.href;
+
+          videoTransicao.style.display = 'block';
+          videoTransicao.currentTime = 0;
+          videoTransicao.play();
+
+          videoFundo.pause();
+
+          videoTransicao.onended = () => {
+            window.location.href = url;
+          };
+        });
+      });
+    });
+  </script>
+</body>
+</html>

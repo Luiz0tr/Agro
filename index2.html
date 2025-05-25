@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Vídeo de Fundo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet" />
+  <style>
+    #video-fundo {
+      position: fixed;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow-y: auto;
+      font-family: Arial, sans-serif;
+    }
+
+    .top-buttons {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 25px;
+      pointer-events: auto;
+      z-index: 10;
+    }
+
+    .top-buttons a {
+      font-family: 'Quicksand', sans-serif;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      padding: 6px 14px;
+      background: rgba(0, 60, 0, 0.7);
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0, 140, 0, 0.7);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+      animation: revealText 2s forwards;
+    }
+
+    .top-buttons a:hover {
+      background: #3cab00;
+      color: #fff !important;
+      box-shadow: 0 0 12px #3cab00;
+      text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.8);
+    }
+
+    @keyframes revealText {
+      0%, 50% { color: transparent; text-shadow: none; }
+      51%, 100% { color: #fff; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); }
+    }
+
+    .titulo-canto {
+      position: fixed;
+      top: 20px;
+      right: 30px;
+      z-index: 2;
+    }
+
+    .titulo-canto img {
+      height: 50px;
+      filter: drop-shadow(1px 1px 3px rgba(0,0,0,0.5));
+    }
+
+    @keyframes aparecer {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .conteudo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 40px 60px;
+      border-radius: 10px;
+      max-width: 700px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      z-index: 1;
+      text-align: left;
+      font-family: 'Quicksand', sans-serif;
+      color: #222;
+      overflow-y: auto;
+      max-height: 80vh;
+      animation: aparecer 1.2s ease-out;
+    }
+
+    .conteudo h1 {
+      font-weight: 700;
+      font-size: 2.2rem;
+      color: #3cab00;
+      margin-bottom: 15px;
+      text-align: center;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .legenda {
+      font-size: 1.1rem;
+      color: #555;
+      text-align: center;
+      margin-bottom: 30px;
+      font-style: italic;
+    }
+
+    .secao-info {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 25px;
+      background-color: #f9f9f9;
+      padding: 5px 5px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,140,0,0.1);
+    }
+
+    .secao-info img {
+      width: 150px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,140,0,0.3);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .secao-info div h2 {
+      margin: 0 0 8px 0;
+      font-size: 1.3rem;
+      color: #2e7d32;
+    }
+
+    .secao-info div p {
+      margin: 0;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    .explicacao-hover {
+      position: fixed;
+      top: 50%;
+      left: calc(50% + 360px);
+      transform: translateY(-50%);
+      width: 280px;
+      height: 4px;
+      padding: 0 25px;
+      background: #3cab00;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(50, 150, 50, 0.3);
+      color: transparent;
+      font-size: 1rem;
+      line-height: 1.5;
+      font-family: 'Quicksand', sans-serif;
+      user-select: none;
+      border: 1.5px solid #8fc98f;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    @keyframes barraExpandirLargura {
+      from { width: 0; opacity: 1; }
+      to { width: 280px; opacity: 1; }
+    }
+
+    @keyframes barraExpandirAltura {
+      from { height: 4px; }
+      to { height: 140px; }
+    }
+
+    @keyframes textoAparecer {
+      from { color: transparent; }
+      to { color: #2a5d2a; }
+    }
+
+    .explicacao-hover.mostrar {
+      opacity: 1;
+      pointer-events: auto;
+      animation: barraExpandirLargura 0.4s forwards ease-out,
+                 barraExpandirAltura 0.4s forwards ease-out 0.4s;
+      padding-top: 20px;
+      padding-bottom: 20px;
+      background: linear-gradient(135deg, #e6f4e6, #c8e6c9);
+      color: transparent;
+      border-color: #8fc98f;
+      box-shadow: 0 4px 15px rgba(50, 150, 50, 0.3);
+      border-radius: 12px;
+      overflow-y: auto;
+      height: 40px;
+      width: 80px;
+      animation-fill-mode: forwards;
+      animation-delay: 0s, 0.4s;
+    }
+
+    .explicacao-hover.texto-visivel {
+      animation: textoAparecer 0.3s forwards ease-in;
+      color: #2a5d2a;
+      pointer-events: auto;
+      padding-top: 10px;
+      padding-bottom: 20px;
+      overflow-y: auto;
+      height: 50px;
+      width: 150px;
+      background: linear-gradient(135deg, #e6f4e6, #c8e6c9);
+      border-radius: 12px;
+      border: 1.5px solid #8fc98f;
+      box-shadow: 0 4px 15px rgba(50, 150, 50, 0.3);
+      user-select: text;
+    }
+
+    .explicacao-hover.ocultar {
+      opacity: 0;
+      pointer-events: none;
+      width: 0 !important;
+      height: 4px !important;
+      padding: 0 25px !important;
+      color: transparent !important;
+      background: #3cab00 !important;
+      border-radius: 12px;
+      border: 1.5px solid transparent !important;
+      box-shadow: none !important;
+      overflow: hidden;
+    }
+
+    #transicao-video {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1000;
+      background-color: black;
+    }
+
+    #card-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #f9f9f9;
+      padding: 20px 30px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+      border-radius: 12px;
+      max-width: 400px;
+      max-height: 70vh;
+      overflow-y: auto;
+      z-index: 1001;
+      display: none;
+      font-family: 'Quicksand', sans-serif;
+      color: #222;
+    }
+
+    #card-modal h3 {
+      margin-top: 0;
+      color: #3cab00;
+    }
+
+    #card-modal p {
+      font-size: 1rem;
+      line-height: 1.4;
+      margin-bottom: 15px;
+    }
+
+    #card-modal .fechar-btn {
+      cursor: pointer;
+      background: #3cab00;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+      float: right;
+    }
+
+    #card-modal .fechar-btn:hover {
+      background: #2e7d32;
+    }
+
+    #overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.4);
+      z-index: 1000;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget('https://vlibras.gov.br/app');
+  </script>
+
+  <video autoplay muted loop id="video-fundo">
+    <source src="175717-854057981_tiny.mp4" type="video/mp4" />
+    Seu navegador não suporta vídeo HTML5.
+  </video>
+
+  <div class="titulo-canto">
+    <img src="Logo-removebg-preview.png" alt="Logo Morelli" />
+  </div>
+
+  <div class="explicacao-hover" id="explicacaoBox"></div>
+
+  <div class="conteudo">
+    <div class="top-buttons">
+      <a href="Contato.html" class="contato">Contato</a>
+      <a href="index.html" class="saiba">Home</a>
+      <a href="index3.html" class="continuar">Continuar</a>
+    </div>
+
+    <h1>Do campo à cidade com o agro</h1>
+    <br><br>
+    <p class="legenda">
+      Entenda como a agricultura moderna conecta o campo às áreas urbanas, promovendo inovação, sustentabilidade e desenvolvimento econômico para todos.
+    </p>
+
+    <section class="secao-info">
+      <img src="Agro.jpg" 
+           alt="Trator no campo"
+           onclick="abrirCard('Produção Sustentável', 'A produção sustentável é essencial para preservar o meio ambiente enquanto garantimos alimentos para o presente e futuro. Técnicas como rotação de culturas evitam o esgotamento do solo, compostagem devolve nutrientes à terra e o manejo eficiente da água reduz o desperdício. Essas práticas aumentam a produtividade a longo prazo, ajudam a conservar a biodiversidade e minimizam os impactos negativos, permitindo que a agricultura cresça de forma equilibrada e responsável.')"
+           onmouseenter="mostrarExplicacao('!Clique para ver mais!')" 
+           onmouseleave="ocultarExplicacao()" />
+      <div>
+        <h2>Produção Sustentável</h2>
+        <p>A agricultura sustentável visa proteger o meio ambiente, usando técnicas que conservam solo, água e biodiversidade.</p>
+      </div>
+    </section>
+
+    <section class="secao-info">
+      <img src="https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=150&q=80" 
+           alt="Mercado na cidade" 
+           onclick="abrirCard('Conexão com a Cidade', 'A ligação entre o campo e a cidade é fundamental para garantir alimentos frescos e de qualidade à população urbana. Uma logística eficiente transporta os produtos diretamente do produtor ao consumidor, reduzindo perdas e custos. Além disso, essa conexão fortalece a economia local, valoriza o trabalho dos agricultores e promove uma alimentação mais saudável, pois os alimentos chegam rapidamente, preservando suas propriedades nutricionais e sabor.')"
+           onmouseenter="mostrarExplicacao('!Clique para ver mais!')"
+           onmouseleave="ocultarExplicacao()" />
+      <div>
+        <h2>Conexão com a Cidade</h2>
+        <p>Produtos agropecuários frescos chegam às cidades, garantindo qualidade de vida e saúde para a população urbana.</p>
+      </div>
+    </section>
+
+    <section class="secao-info">
+      <img src="LogoAgro.png" 
+           alt="Tecnologia agrícola" 
+           onclick="abrirCard('Inovação e Tecnologia', 'A agricultura 4.0 é a combinação de tecnologia e agricultura para uma produção mais inteligente e sustentável. Com o uso de inteligência artificial, drones, sensores e análise de dados, é possível monitorar o solo, o clima e a saúde das plantas em tempo real. Isso permite tomar decisões precisas, reduzir o uso de insumos, evitar desperdícios e aumentar a produtividade. O resultado é uma agricultura moderna, eficiente e que respeita o meio ambiente.')"
+           onmouseenter="mostrarExplicacao('Clique para ver mais')"
+           onmouseleave="ocultarExplicacao()" />
+      <div>
+        <h2>Inovação e Tecnologia</h2>
+        <p>Tecnologias avançadas, como drones e sensores, aumentam a eficiência da produção e reduzem impactos ambientais.</p>
+      </div>
+    </section>
+
+    <br><br>
+    <p class="legenda">
+      Além dos benefícios proporcionados pelo agro, é importante destacar também os 
+      <a href="index3.html" id="desafios-link" style="color: #3cab00; cursor: pointer; text-decoration: underline;">
+        desafios e as oportunidades que surgem na cooperação entre as áreas rurais e urbanas.
+      </a>
+    </p>
+  </div>
+
+  <video id="transicao-video" muted>
+    <source src="Transasao.mp4" type="video/mp4" />
+    Seu navegador não suporta vídeo HTML5.
+  </video>
+
+  <div id="overlay" onclick="fecharCard()"></div>
+
+  <div id="card-modal">
+    <button class="fechar-btn" onclick="fecharCard()">Fechar ✖</button>
+    <h3 id="card-title"></h3>
+    <p id="card-text"></p>
+  </div>
+
+  <script>
+    const explicacaoBox = document.getElementById('explicacaoBox');
+
+    function mostrarExplicacao(texto) {
+      explicacaoBox.textContent = texto;
+      explicacaoBox.classList.add('mostrar');
+      explicacaoBox.classList.remove('texto-visivel');
+      setTimeout(() => {
+        explicacaoBox.classList.add('texto-visivel');
+      }, 400);
+    }
+
+    function ocultarExplicacao() {
+      explicacaoBox.classList.remove('mostrar', 'texto-visivel');
+    }
+
+    const cardModal = document.getElementById('card-modal');
+    const overlay = document.getElementById('overlay');
+    const cardTitle = document.getElementById('card-title');
+    const cardText = document.getElementById('card-text');
+
+    function abrirCard(titulo, texto) {
+      cardTitle.textContent = titulo;
+      cardText.textContent = texto;
+      cardModal.style.display = 'block';
+      overlay.style.display = 'block';
+      cardModal.scrollTop = 0;
+    }
+
+    function fecharCard() {
+      cardModal.style.display = 'none';
+      overlay.style.display = 'none';
+    }
+
+    const videoTransicao = document.getElementById('transicao-video');
+    const videoFundo = document.getElementById('video-fundo');
+
+    const links = [
+      ...document.querySelectorAll('.top-buttons a'),
+      document.getElementById('desafios-link')
+    ];
+
+    links.forEach(link => {
+      if (link) {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+
+          fecharCard();
+
+          videoFundo.style.display = 'none';
+          videoTransicao.style.display = 'block';
+          videoTransicao.currentTime = 0;
+          videoTransicao.play();
+
+          videoTransicao.onended = () => {
+            window.location.href = link.href;
+          };
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Contato com Vídeo de Fundo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    #video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .btn-voltar {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 24px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 2px solid #2e7d32;
+      color: #2e7d32;
+      padding: 8px 14px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+
+    .btn-voltar:hover {
+      background: #2e7d32;
+      color: white;
+    }
+
+    .contato-box {
+      position: absolute;
+      top: 50%;
+      right: 50px;
+      transform: translateY(-50%);
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 40px 30px;
+      width: 300px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .contato-box h2 {
+      margin-bottom: 20px;
+      font-size: 22px;
+      color: #2e7d32;
+    }
+
+    .contato-box p {
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .contato-box a {
+      color: #2e7d32;
+      text-decoration: none;
+    }
+
+    .contato-box a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <video id="video-bg" autoplay muted loop>
+    <source src="175717-854057981_tiny.mp4" type="video/mp4">
+    Seu navegador não suporta vídeos HTML5.
+  </video>
+
+  <a href="index.html" class="btn-voltar">←</a>
+
+  <div class="contato-box">
+    <h2>Entre em Contato</h2>
+    <p><strong>Email:</strong> colegiomorelli@hotmail.com</p>
+    <p><strong>Telefone:</strong> 41991821660</p>
+    <p><strong>Instagram:</strong> <a href="https://www.instagram.com/luizz_otr/" target="_blank">@Luiz_otrr</a></p>
+    <p><strong>Endereço:</strong> Rua Luiz Nichele, 8 Umbara</p>
+  </div>
+
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget('https://vlibras.gov.br/app');
+  </script>
+</body>
+</html>
